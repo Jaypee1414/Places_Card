@@ -9,12 +9,6 @@ export default function AvailablePlaces({ onSelectPlace }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error , setError] = useState();
 
-  // fetch('http://localhost:3000/places').then((res)=>{
-  //   return res.json()
-  // }).then((data)=>{
-  //   setAvailablePalces(data.places)
-  // })
-
   useEffect(()=>{
     const FetchData = async()=>{
     setIsLoading(true)
