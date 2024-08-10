@@ -5,12 +5,14 @@ import Modal from './components/Modal.jsx';
 import DeleteConfirmation from './components/DeleteConfirmation.jsx';
 import logoImg from './assets/logo.png';
 import AvailablePlaces from './components/AvailablePlaces.jsx';
+import {fetchDataplaces} from './FetchData.js'
+import Error from './Error.jsx';
 
 function App() {
   const selectedPlace = useRef();
 
   const [userPlaces, setUserPlaces] = useState([]);
-
+  const [error, setError] = useState()
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   function handleStartRemovePlace(place) {
@@ -22,7 +24,7 @@ function App() {
     setModalIsOpen(false);
   }
 
-  function handleSelectPlace(selectedPlace) {
+  async function handleSelectPlace(selectedPlace) {
     setUserPlaces((prevPickedPlaces) => {
       if (!prevPickedPlaces) {
         prevPickedPlaces = [];
@@ -32,6 +34,12 @@ function App() {
       }
       return [selectedPlace, ...prevPickedPlaces];
     });
+    try {
+      const data = await fetchDataplaces([selectedPlace, ...userPlaces]) 
+    } catch (error) {
+      setError({message: 'Failed to insert a new data places, Please Try again Later.'})
+      setUserPlaces(userPlaces)
+    }
   }
 
   const handleRemovePlace = useCallback(async function handleRemovePlace() {
@@ -42,8 +50,20 @@ function App() {
     setModalIsOpen(false);
   }, []);
 
+  function handleError(){
+    setError(null)
+  }
   return (
     <>
+      <Modal open={error} onClose={handleError}>
+        {error &&
+        <Error
+          title="An Error Occurred!"
+          message={error.message}
+          onConfirm={handleError}
+        />}
+      </Modal>
+      
       <Modal open={modalIsOpen} onClose={handleStopRemovePlace}>
         <DeleteConfirmation
           onCancel={handleStopRemovePlace}

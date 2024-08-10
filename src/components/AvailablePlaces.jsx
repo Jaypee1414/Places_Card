@@ -3,7 +3,7 @@ import Places from './Places.jsx';
 import axios from 'axios';
 import {sortPlacesByDistance} from '../loc.js'
 import Error from '../Error.jsx'
-import handleDataPlaces from '../FetchData.js'
+import {handleDataPlaces} from '../FetchData.js'
 export default function AvailablePlaces({ onSelectPlace }) {
   const [availablePlaces, setAvailablePalces] = useState([])
   const [isLoading, setIsLoading] = useState(false)
