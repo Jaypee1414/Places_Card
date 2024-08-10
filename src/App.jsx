@@ -5,12 +5,12 @@ import Modal from './components/Modal.jsx';
 import DeleteConfirmation from './components/DeleteConfirmation.jsx';
 import logoImg from './assets/logo.png';
 import AvailablePlaces from './components/AvailablePlaces.jsx';
-import {fetchDataplaces} from './FetchData.js'
+import {fetchDataplaces,handleUserDataPlaces} from './FetchData.js'
 import Error from './Error.jsx';
 
 function App() {
   const selectedPlace = useRef();
-  const [loading , setLoading] = useState()
+  const [loading , setLoading] = useState(false)
   const [userPlaces, setUserPlaces] = useState([]);
   const [error, setError] = useState()
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -18,14 +18,17 @@ function App() {
 
   useEffect(()=>{
     async function fetchData(){
+      setLoading(true)
       try {
-        
+        const places = await handleUserDataPlaces()
+        setUserPlaces(places)
       } catch (error) {
         error({message: "Failed to fetch Data places. Please try again later ..." || error.message})
       }
+      setLoading(false)
     }
     fetchData()
-  })
+  },[])
   function handleStartRemovePlace(place) {
     setModalIsOpen(true);
     selectedPlace.current = place;

@@ -7,6 +7,16 @@ export async function handleDataPlaces (){
     return response.places
 }
 
+export async function handleUserDataPlaces (){
+    const dataplaces = await fetch('http://localhost:3000/user-places')
+    const response = await dataplaces.json()
+    if(!dataplaces.ok){
+    throw new Error("Failed to fetch places")   
+    }
+    return response.places
+}
+
+
 export async function fetchDataplaces(places){
     const response = await fetch('http://localhost:3000/user-places',{
         method: 'PUT',
