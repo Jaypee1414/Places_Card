@@ -3,6 +3,7 @@ import Places from './Places.jsx';
 import axios from 'axios';
 import {sortPlacesByDistance} from '../loc.js'
 import Error from '../Error.jsx'
+import handleDataPlaces from '../FetchData.js'
 export default function AvailablePlaces({ onSelectPlace }) {
   const [availablePlaces, setAvailablePalces] = useState([])
   const [isLoading, setIsLoading] = useState(false)
@@ -16,16 +17,11 @@ export default function AvailablePlaces({ onSelectPlace }) {
 
   useEffect(()=>{
     const FetchData = async()=>{
-
+    setIsLoading(true)
      try {
-      setIsLoading(true)
-      const dataplaces = await fetch('http://localhost:3000/places')
-      const response = await dataplaces.json()
-      if(!dataplaces.ok){
-        throw new Error("Failed to fetch places")   
-      }
+      const response = await handleDataPlaces();
       navigator.geolocation.getCurrentPosition((position)=>{
-        const places = sortPlacesByDistance(response.places , position.coords.latitude, position.coords.longitude)
+        const places = sortPlacesByDistance(response , position.coords.latitude, position.coords.longitude)
         setAvailablePalces(places)
         setIsLoading(false)
       })
@@ -38,14 +34,8 @@ export default function AvailablePlaces({ onSelectPlace }) {
   },[])
 
   if(error){
-    return <Error title="Failed to Fetch Data" message={error.message}/>
+    return <Error title="An error Occured!" message={error.message}/>
   }
-
-
-  // navigator.geolocation.getCurrentPosition((position)=>{
-  //   sortPlacesByDistance(availablePlaces ,position.coords.latitude, position.coords.longitude)
-  // })
-
 
   return (
     <Places
