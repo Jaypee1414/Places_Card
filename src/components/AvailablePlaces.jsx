@@ -1,32 +1,22 @@
-import { useEffect, useState } from 'react';
 import Places from './Places.jsx';
-import axios from 'axios';
 import {sortPlacesByDistance} from '../loc.js'
 import Error from '../Error.jsx'
 import {handleDataPlaces} from '../FetchData.js'
+import {useFetch} from '../hooks/useFetch.js'
+
+async function FetchPlacesData(){
+  const Fetchaplaces = await handleDataPlaces()
+  return new Promise((resolve) => {
+    navigator.geolocation.getCurrentPosition((position)=>{
+      const places = sortPlacesByDistance(Fetchaplaces , position.coords.latitude, position.coords.longitude)
+      resolve(places)
+    })
+  })
+}
+
 export default function AvailablePlaces({ onSelectPlace }) {
-  const [availablePlaces, setAvailablePalces] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error , setError] = useState();
 
-  useEffect(()=>{
-    const FetchData = async()=>{
-    setIsLoading(true)
-     try {
-      const response = await handleDataPlaces();
-      navigator.geolocation.getCurrentPosition((position)=>{
-        const places = sortPlacesByDistance(response , position.coords.latitude, position.coords.longitude)
-        setAvailablePalces(places)
-        setIsLoading(false)
-      })
-     } catch (error) {
-      setError({message : "Failed to fetch the data, Please try again later" || error.messsage})
-      setIsLoading(false)
-     }
-    }
-    FetchData()
-  },[])
-
+  const {userPlaces: availablePlaces, error,loading: isLoading} = useFetch(FetchPlacesData,[])
   if(error){
     return <Error title="An error Occured!" message={error.message}/>
   }

@@ -1,5 +1,6 @@
 console.log("check the duplicate")
-const data = [1,1,2,3,4,4,5,6,7,7,7,7,8,1,2]
+const data = [10,10,10,22,33,40,40,51,62,71,71,71,71,81,10,22]
+
 
 const res = data.reduce((x,y)=>{
     if(x[y]){

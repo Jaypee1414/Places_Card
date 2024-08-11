@@ -7,28 +7,12 @@ import logoImg from './assets/logo.png';
 import AvailablePlaces from './components/AvailablePlaces.jsx';
 import {fetchDataplaces,handleUserDataPlaces} from './FetchData.js'
 import Error from './Error.jsx';
-
+import {useFetch} from './hooks/useFetch.js'
 function App() {
   const selectedPlace = useRef();
-  const [loading , setLoading] = useState(false)
-  const [userPlaces, setUserPlaces] = useState([]);
-  const [error, setError] = useState()
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const {loading, error, userPlaces,setUserPlaces} = useFetch(handleUserDataPlaces,[])
 
-
-  useEffect(()=>{
-    async function fetchData(){
-      setLoading(true)
-      try {
-        const places = await handleUserDataPlaces()
-        setUserPlaces(places)
-      } catch (error) {
-        error({message: "Failed to fetch Data places. Please try again later ..." || error.message})
-      }
-      setLoading(false)
-    }
-    fetchData()
-  },[])
   function handleStartRemovePlace(place) {
     setModalIsOpen(true);
     selectedPlace.current = place;
@@ -83,7 +67,9 @@ function App() {
         />}
       </Modal>
       
-      <Modal open={modalIsOpen} onClose={handleStopRemovePlace}>
+      <Modal open={modalIsOpen} 
+      onClose={handleStopRemovePlace}
+      >
         <DeleteConfirmation
           onCancel={handleStopRemovePlace}
           onConfirm={handleRemovePlace}
@@ -109,7 +95,9 @@ function App() {
           loadingtext="Fetching Data Places ..."
           onSelectPlace={handleStartRemovePlace}
         />}
-        <AvailablePlaces onSelectPlace={handleSelectPlace} />
+        <AvailablePlaces 
+        onSelectPlace={handleSelectPlace} ç
+        />
       </main>
     </>
   );
